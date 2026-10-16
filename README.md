@@ -18,7 +18,7 @@ To add it to Steam, use **Games → Add a Non-Steam Game** and select `bin\Relea
 - Starts at `C:\`. Type or paste any accessible Windows path, use the drive selector, breadcrumbs, or **Parent** to navigate.
 - The grid uses Windows Shell thumbnails and falls back to the file or folder icon. It reads only the current folder and does not modify files.
 - Open images and videos with Enter, A, or a double-click. Images display in the app; videos use Windows Media Foundation codecs. If Windows lacks a codec, the app reports the playback failure.
-- D-pad or left stick changes selection; A opens; B returns/closes; LB/RB changes media while viewing. Keyboard arrows, Enter, Backspace, Escape, left/right, and Space provide keyboard equivalents.
+- D-pad or left stick changes selection; A opens; B returns/closes and asks to quit at a drive root; LB/RB changes media while viewing. Keyboard arrows, Enter, Backspace, Escape, left/right, and Space provide keyboard equivalents. Ctrl+Q opens the quit confirmation from anywhere, and Alt+F4 or the window close control also asks before exiting.
 - Unlock BitLocker in Windows or mount VeraCrypt volumes in VeraCrypt, then use **Refresh drives**. Sidequest does not handle or store disk passwords.
 
 ## Notes

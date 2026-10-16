@@ -26,6 +26,7 @@ public partial class MainWindow : Window
     private bool _updatingProgress;
     private bool _isFullscreen;
     private bool _isVideoOnly;
+    private bool _allowClose;
     private WindowStyle _previousWindowStyle;
     private ResizeMode _previousResizeMode;
     private WindowState _previousWindowState;
@@ -253,6 +254,13 @@ public partial class MainWindow : Window
 
     private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
     {
+        if (e.Key == Key.Q && Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
+        {
+            e.Handled = true;
+            ShowQuitConfirmation();
+            return;
+        }
+
         if (e.Key == Key.F11)
         {
             e.Handled = true;
@@ -286,16 +294,32 @@ public partial class MainWindow : Window
             if (e.Key == Key.Escape || e.Key == Key.Back)
             {
                 e.Handled = true;
-                if (_isVideoOnly) ToggleVideoOnly();
+                if (QuitConfirmationOverlay.Visibility == Visibility.Visible) DismissQuitConfirmation();
+                else if (_isVideoOnly) ToggleVideoOnly();
                 else CloseViewer();
             }
             else if (e.Key == Key.Space && VideoPlayer.Visibility == Visibility.Visible) { e.Handled = true; TogglePlayback(); }
         }
-        else if (e.Key == Key.Escape) { e.Handled = true; _ = GoParentAsync(); }
+        else if (e.Key == Key.Escape)
+        {
+            e.Handled = true;
+            if (QuitConfirmationOverlay.Visibility == Visibility.Visible) DismissQuitConfirmation();
+            else if (IsAtDriveRoot()) ShowQuitConfirmation();
+            else _ = GoParentAsync();
+        }
     }
 
     private async void ActivateSelection()
     {
+        if (QuitConfirmationOverlay.Visibility == Visibility.Visible)
+        {
+            if (Keyboard.FocusedElement is Button quitDialogButton && quitDialogButton.IsEnabled)
+                quitDialogButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent, quitDialogButton));
+            else
+                DismissQuitConfirmation();
+            return;
+        }
+
         if (_isVideoOnly)
         {
             TogglePlayback();
@@ -338,6 +362,14 @@ public partial class MainWindow : Window
 
     private void MoveSelection(int direction)
     {
+        if (QuitConfirmationOverlay.Visibility == Visibility.Visible)
+        {
+            var quitControls = GetQuitConfirmationControls();
+            var focusedQuitControl = quitControls.FirstOrDefault(control => control.IsKeyboardFocusWithin);
+            MoveControlFocus(quitControls, focusedQuitControl, direction is -1 or -2 ? -1 : 1);
+            return;
+        }
+
         if (ViewerOverlay.Visibility == Visibility.Visible)
         {
             if (_isVideoOnly)
@@ -405,6 +437,8 @@ public partial class MainWindow : Window
         .Where(control => control.Visibility == Visibility.Visible && control.IsEnabled)
         .ToArray();
 
+    private Control[] GetQuitConfirmationControls() => [KeepBrowsingButton, QuitButton];
+
     private static void MoveControlFocus(Control[] controls, Control? focused, int direction)
     {
         if (controls.Length == 0) return;
@@ -415,9 +449,51 @@ public partial class MainWindow : Window
 
     private void BackAction()
     {
-        if (_isVideoOnly) ToggleVideoOnly();
+        if (QuitConfirmationOverlay.Visibility == Visibility.Visible) DismissQuitConfirmation();
+        else if (_isVideoOnly) ToggleVideoOnly();
         else if (ViewerOverlay.Visibility == Visibility.Visible) CloseViewer();
+        else if (IsAtDriveRoot()) ShowQuitConfirmation();
         else _ = GoParentAsync();
+    }
+
+    private bool IsAtDriveRoot()
+    {
+        var root = Path.GetPathRoot(_currentPath);
+        return root is not null && string.Equals(Path.GetFullPath(_currentPath), Path.GetFullPath(root), StringComparison.OrdinalIgnoreCase);
+    }
+
+    private void ShowQuitConfirmation()
+    {
+        if (QuitConfirmationOverlay.Visibility == Visibility.Visible) return;
+        QuitConfirmationOverlay.Visibility = Visibility.Visible;
+        KeepBrowsingButton.Focus();
+    }
+
+    private void DismissQuitConfirmation()
+    {
+        QuitConfirmationOverlay.Visibility = Visibility.Collapsed;
+        if (ViewerOverlay.Visibility == Visibility.Visible)
+        {
+            if (_isVideoOnly) ViewerOverlay.Focus();
+            else if (VideoPlayer.Visibility == Visibility.Visible) PlayPauseButton.Focus();
+            else FullScreenButton.Focus();
+        }
+        else EntriesList.Focus();
+    }
+
+    private void KeepBrowsing_Click(object sender, RoutedEventArgs e) => DismissQuitConfirmation();
+
+    private void Quit_Click(object sender, RoutedEventArgs e)
+    {
+        _allowClose = true;
+        Close();
+    }
+
+    private void Window_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
+    {
+        if (_allowClose) return;
+        e.Cancel = true;
+        ShowQuitConfirmation();
     }
 
     private void OpenMedia(BrowserItem item)

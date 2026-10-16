@@ -1,0 +1,76 @@
+<Application x:Class="Sidequest.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             StartupUri="MainWindow.xaml">
+  <Application.Resources>
+    <SolidColorBrush x:Key="WindowBrush" Color="#101318" />
+    <SolidColorBrush x:Key="PanelBrush" Color="#1B2029" />
+    <SolidColorBrush x:Key="TileBrush" Color="#202630" />
+    <SolidColorBrush x:Key="AccentBrush" Color="#86BFFF" />
+    <SolidColorBrush x:Key="MutedBrush" Color="#AAB4C0" />
+    <Style TargetType="TextBlock">
+      <Setter Property="Foreground" Value="#F4F6F8" />
+    </Style>
+    <Style TargetType="Button">
+      <Setter Property="Foreground" Value="#F4F6F8" />
+      <Setter Property="Background" Value="{StaticResource TileBrush}" />
+      <Setter Property="BorderBrush" Value="#394351" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="Padding" Value="14,9" />
+      <Setter Property="FontSize" Value="16" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="Button">
+            <Border x:Name="ButtonBorder" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="10" Padding="{TemplateBinding Padding}">
+              <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </Border>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="ButtonBorder" Property="Background" Value="#303A48" /></Trigger>
+              <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="ButtonBorder" Property="BorderBrush" Value="{StaticResource AccentBrush}" /><Setter TargetName="ButtonBorder" Property="BorderThickness" Value="3" /></Trigger>
+              <Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value="0.55" /></Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+    <Style TargetType="TextBox">
+      <Setter Property="Background" Value="#181D25" />
+      <Setter Property="Foreground" Value="#F4F6F8" />
+      <Setter Property="CaretBrush" Value="#F4F6F8" />
+      <Setter Property="BorderBrush" Value="#394351" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="Padding" Value="12,9" />
+      <Setter Property="FontSize" Value="16" />
+      <Style.Triggers>
+        <Trigger Property="IsKeyboardFocusWithin" Value="True">
+          <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}" />
+          <Setter Property="BorderThickness" Value="2" />
+        </Trigger>
+      </Style.Triggers>
+    </Style>
+    <Style TargetType="ComboBox">
+      <Setter Property="Background" Value="#181D25" />
+      <Setter Property="Foreground" Value="#F4F6F8" />
+      <Setter Property="BorderBrush" Value="#394351" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="Padding" Value="10,8" />
+      <Setter Property="FontSize" Value="16" />
+      <Style.Triggers>
+        <Trigger Property="IsKeyboardFocusWithin" Value="True">
+          <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}" />
+          <Setter Property="BorderThickness" Value="2" />
+        </Trigger>
+      </Style.Triggers>
+    </Style>
+    <Style TargetType="ComboBoxItem">
+      <Setter Property="Foreground" Value="#111827" />
+      <Setter Property="Background" Value="#F7F9FC" />
+      <Setter Property="Padding" Value="10,7" />
+      <Style.Triggers>
+        <Trigger Property="IsHighlighted" Value="True"><Setter Property="Background" Value="#C9DFFF" /><Setter Property="Foreground" Value="#111827" /></Trigger>
+        <Trigger Property="IsSelected" Value="True"><Setter Property="Background" Value="#B5D1F5" /><Setter Property="Foreground" Value="#111827" /></Trigger>
+      </Style.Triggers>
+    </Style>
+  </Application.Resources>
+</Application>

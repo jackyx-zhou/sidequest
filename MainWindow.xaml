@@ -3,7 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Sidequest" Width="1280" Height="820" MinWidth="850" MinHeight="600"
         Background="{StaticResource WindowBrush}" Foreground="#F4F6F8"
-        WindowStartupLocation="CenterScreen" Loaded="Window_Loaded" PreviewKeyDown="Window_PreviewKeyDown">
+        WindowStartupLocation="CenterScreen" Loaded="Window_Loaded" PreviewKeyDown="Window_PreviewKeyDown"
+        Closing="Window_Closing">
   <Grid x:Name="Root" Margin="28">
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
@@ -112,7 +113,7 @@
                    Minimum="0" Maximum="1" Visibility="Collapsed" VerticalAlignment="Center" />
       <TextBlock x:Name="PreviewProgressText" Grid.Column="2" Foreground="{StaticResource MutedBrush}" FontSize="13"
                  VerticalAlignment="Center" Margin="0,0,18,0" Visibility="Collapsed" />
-      <TextBlock Grid.Column="3" Text="D-pad: browse / move controls   A: select / play   B: back   LB / RB: previous / next"
+      <TextBlock Grid.Column="3" Text="D-pad: browse / controls   A: select / play   B: back / quit at root   LB / RB: media   Ctrl+Q: quit"
                  Foreground="{StaticResource MutedBrush}" FontSize="13" VerticalAlignment="Center" />
     </Grid>
 
@@ -152,6 +153,24 @@
           <Button x:Name="SeekForwardButton" Content="+10 sec" Click="SeekForward_Click" Margin="8,0,0,0" />
         </StackPanel>
       </Grid>
+    </Grid>
+
+    <Grid x:Name="QuitConfirmationOverlay" Grid.RowSpan="5" Visibility="Collapsed"
+          Background="#D9000000" Panel.ZIndex="10" Focusable="True">
+      <Border HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="560"
+              Background="{StaticResource PanelBrush}" BorderBrush="#536174" BorderThickness="2"
+              CornerRadius="18" Padding="32">
+        <StackPanel>
+          <TextBlock Text="Quit Sidequest?" FontSize="28" FontWeight="Bold" />
+          <TextBlock Text="Your files will not be changed." Foreground="{StaticResource MutedBrush}"
+                     FontSize="17" Margin="0,10,0,26" />
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button x:Name="KeepBrowsingButton" Content="Keep browsing" Click="KeepBrowsing_Click"
+                    IsDefault="True" Margin="0,0,12,0" />
+            <Button x:Name="QuitButton" Content="Quit Sidequest" Click="Quit_Click" />
+          </StackPanel>
+        </StackPanel>
+      </Border>
     </Grid>
   </Grid>
 </Window>
